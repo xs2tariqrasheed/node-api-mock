@@ -19,7 +19,7 @@ function generateRandomRecords() {
     const name = `Service Center ${id}`;
     const phone = generateRandomPhoneNumber();
     const address = generateRandomAddress();
-    const logo = `https://example.com/logo${id}.png`;
+    const logo = `https://placehold.co/40`;
     const openingTime = generateRandomTime();
     const closingTime = generateRandomTime();
     const rating = generateRandomRating();
