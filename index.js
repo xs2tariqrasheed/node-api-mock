@@ -15,30 +15,30 @@ app.get("/", (req, res) => {
 function generateRandomRecords() {
   const records = [];
 
-  for (let id = 1; id <= 500; id++) {
-    const name = `Service Center ${id}`;
-    const phone = generateRandomPhoneNumber();
-    const address = generateRandomAddress();
-    const logo = `https://placehold.co/40`;
-    const openingTime = generateRandomTime();
-    const closingTime = generateRandomTime();
-    const rating = generateRandomRating();
-    const capacity = generateRandomCapacity();
+  // for (let id = 1; id <= 2; id++) {
+  //   const name = `Service Center ${id}`;
+  //   const phone = generateRandomPhoneNumber();
+  //   const address = generateRandomAddress();
+  //   const logo = `https://placehold.co/40`;
+  //   const openingTime = generateRandomTime();
+  //   const closingTime = generateRandomTime();
+  //   const rating = generateRandomRating();
+  //   const capacity = generateRandomCapacity();
 
-    const record = {
-      id,
-      name,
-      phone,
-      address,
-      logo,
-      openingTime,
-      closingTime,
-      rating,
-      capacity,
-    };
+  //   const record = {
+  //     id,
+  //     name,
+  //     phone,
+  //     address,
+  //     logo,
+  //     openingTime,
+  //     closingTime,
+  //     rating,
+  //     capacity,
+  //   };
 
-    records.push(record);
-  }
+  //   records.push(record);
+  // }
 
   return records;
 }
@@ -82,6 +82,10 @@ function generateRandomTime() {
   return time;
 }
 
+function generateRandomIntegerId(min = 0, max = 100000) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function generateRandomRating() {
   return (Math.random() * (5 - 1) + 1).toFixed(1);
 }
@@ -92,26 +96,43 @@ function generateRandomCapacity() {
 
 const randomRecords = generateRandomRecords();
 
-app.get("/api/service-centers", (req, res) => {
+app.get("/api/reference-module", (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
   const search = req.query.search || "";
 
-  const filteredData = randomRecords.filter(
+  const filteredData = randomRecords?.filter(
     (item) =>
-      item.phone.includes(search) ||
-      item.name.toLowerCase().includes(search.toLowerCase())
+      item.phone?.includes(search) ||
+      item.name?.toLowerCase()?.includes(search.toLowerCase())
   );
 
-  const paginatedData = filteredData.slice(
+  const paginatedData = filteredData?.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
 
   res.json({
-    total: filteredData.length,
+    total: filteredData?.length,
     data: paginatedData,
   });
+});
+
+app.post("/api/reference-module", (req, res) => {
+  const data = { ...req.body, id: generateRandomIntegerId() };
+  randomRecords.push(data);
+  res.json({ message: "successfull create" });
+});
+
+app.patch("/api/reference-module", (req, res) => {
+  const editRecordIndex = randomRecords.findIndex(
+    (item) => item.id === req.body.id
+  );
+
+  if (editRecordIndex !== -1) {
+    randomRecords[editRecordIndex] = req.body;
+  }
+  res.json({ message: "update record successfull" });
 });
 
 // Start the server
